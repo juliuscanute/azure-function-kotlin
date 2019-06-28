@@ -1,6 +1,7 @@
 package api.controller
 
-import api.data.Dictionary
+import api.data.dto.ErrorMesssage
+import api.data.exception.PageRetrievalException
 import api.data.repository.RepositoryInterface
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -9,8 +10,12 @@ class DictionaryController: KoinComponent {
 
     private val repository: RepositoryInterface by inject()
 
-    fun getWords(currentPage: Int): Dictionary {
-        return repository.getWords(currentPage)
+    fun getNumberOfPagesInDictionary() : Any {
+        return try {
+            repository.getNumberOfPagesInDictionary()
+        }catch (e: PageRetrievalException){
+            ErrorMesssage(message = e.errorMessage)
+        }
     }
 
 }

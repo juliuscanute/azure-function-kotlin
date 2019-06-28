@@ -37,6 +37,15 @@ paths:
                 start: 1
                 end: 3
                 recordsPerPage: 10
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                message: 'An error has occurred'
+                path: '/v1/dictionary/pages'
 
   /v1/dictionary/page/{pageNo}:
     get:
@@ -70,16 +79,15 @@ paths:
                   - id: 2
                     word: Abase
                     meaning: To cast down or reduce low or lower, as in rank, office, condition in life, or estimation of worthiness; to depress; to humble; to degrade.
-          '404':
-            description: 'Requested page not found'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Exception'
-                example:
-                  date: '2019/01/31 00:00:00'
-                  message: 'Page not found'
-                  path: '/v1/dictionary/page/4'
+        '404':
+          description: 'Requested page not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                message: 'Page not found'
+                path: '/v1/dictionary/page/4'
 
 
   /v1/dictionary:
@@ -112,16 +120,15 @@ paths:
                   - id: 2
                     word: Abase
                     meaning: To cast down or reduce low or lower, as in rank, office, condition in life, or estimation of worthiness; to depress; to humble; to degrade.
-          '404':
-            description: 'Word not found'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Exception'
-                example:
-                  date: '2019/01/31 00:00:00'
-                  message: 'No matching words found'
-                  path: '/v1/dictionary?word="zzzzz"'
+        '404':
+          description: 'Word not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                message: 'No matching words found'
+                path: '/v1/dictionary?word="zzzzz"'
 
 components:
   schemas:
@@ -168,13 +175,9 @@ components:
           type: 'string'
           description: 'Meaning of the word'
 
-    Exception:
+    ErrorMessage:
       type: 'object'
       properties:
-        date:
-          type: 'string'
-          format: 'date-time'
-          description: 'Date of the request'
         message:
           type: 'string'
           description: 'Description of the error'
