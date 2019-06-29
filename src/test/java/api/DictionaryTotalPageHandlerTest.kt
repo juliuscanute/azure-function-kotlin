@@ -165,4 +165,34 @@ class DictionaryTotalPageHandlerTest {
         assertEquals("A", result.words.first().meaning)
         assertEquals(ret.status, HttpStatus.OK)
     }
+
+
+    @Test
+    fun testSearchInDictionary_emptyInput() {
+        val handler = DictionarySearchHandler()
+        val gson = Gson()
+        loadKoinModules(module(override = true) {
+            single { MockRepository() as RepositoryInterface }
+        })
+
+        val req = mock(HttpRequestMessage::class.java)
+
+        val queryParams = HashMap<String, String>()
+        doReturn(queryParams).`when`(req as HttpRequestMessage<Optional<String>>).queryParameters
+
+        doReturn(URI("v1/dictionary")).`when`(req).uri
+
+        val context = mock(ExecutionContext::class.java)
+        doReturn(Logger.getGlobal()).`when`(context).logger
+        doAnswer { invocation ->
+            val status = invocation.arguments[0] as HttpStatus
+            HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
+        }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
+
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2, context)
+
+        val body = ret.body.toString()
+        val result = gson.fromJson(body, SearchResult::class.java)
+        assertEquals(ret.status, HttpStatus.NOT_FOUND)
+    }
 }
