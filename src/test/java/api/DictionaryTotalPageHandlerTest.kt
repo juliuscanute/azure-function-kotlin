@@ -1,10 +1,12 @@
 package api
 
+import api.data.dto.Dictionary
 import api.data.dto.ErrorMesssage
 import api.data.dto.Page
 import api.data.exception.PageRetrievalException
 import api.data.repository.RepositoryInterface
-import api.handler.DictionaryHandler
+import api.handler.DictionaryTotalPageHandler
+import api.handler.DictionaryWordsInPageHandler
 import com.google.gson.Gson
 import com.microsoft.azure.functions.ExecutionContext
 import com.microsoft.azure.functions.HttpRequestMessage
@@ -18,11 +20,11 @@ import java.util.*
 import java.util.logging.Logger
 import kotlin.test.assertEquals
 
-class DictionaryHandlerTest {
+class DictionaryTotalPageHandlerTest {
 
     @Test
     fun testGetTotalPagesInDictionary() {
-        val handler = DictionaryHandler()
+        val handler = DictionaryTotalPageHandler()
         val gson = Gson()
         loadKoinModules(module(override = true) {
             single { MockRepository() as RepositoryInterface }
@@ -47,8 +49,8 @@ class DictionaryHandlerTest {
     }
 
     @Test
-    fun testGetTotalPagesInDictionary_WithExcetption() {
-        val handler = DictionaryHandler()
+    fun testGetTotalPagesInDictionary_withError() {
+        val handler = DictionaryTotalPageHandler()
         val repository = mock(RepositoryInterface::class.java)
         val gson = Gson()
         // Setup
@@ -74,7 +76,59 @@ class DictionaryHandlerTest {
         val ret = handler.run(req as HttpRequestMessage<Optional<String>>, context)
         val body = ret.body.toString()
         val result = gson.fromJson(body, ErrorMesssage::class.java)
-        assertEquals("error",result.message)
-        assertEquals("v1/dictionary/pages",result.path)
+        assertEquals("error", result.message)
+        assertEquals("v1/dictionary/pages", result.path)
+    }
+
+    @Test
+    fun testGetWordsInAPage() {
+        val handler = DictionaryWordsInPageHandler()
+        val gson = Gson()
+        loadKoinModules(module(override = true) {
+            single { MockRepository() as RepositoryInterface }
+        })
+
+        val req = mock(HttpRequestMessage::class.java)
+
+        val context = mock(ExecutionContext::class.java)
+        doReturn(Logger.getGlobal()).`when`(context).logger
+        doAnswer { invocation ->
+            val status = invocation.arguments[0] as HttpStatus
+            HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
+        }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
+
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2,context)
+
+        val body = ret.body.toString()
+        val result = gson.fromJson(body, Dictionary::class.java)
+        assertEquals(2, result.currentPage)
+        assertEquals("B", result.words.first().word)
+        assertEquals("B", result.words.first().meaning)
+        assertEquals(ret.status, HttpStatus.OK)
+    }
+
+    @Test
+    fun testGetWordsInAPage_queryError() {
+        val handler = DictionaryWordsInPageHandler()
+        val gson = Gson()
+        loadKoinModules(module(override = true) {
+            single { MockRepository() as RepositoryInterface }
+        })
+
+        val req = mock(HttpRequestMessage::class.java)
+        doReturn(URI("v1/dictionary/page")).`when`(req).uri
+
+        val context = mock(ExecutionContext::class.java)
+        doReturn(Logger.getGlobal()).`when`(context).logger
+        doAnswer { invocation ->
+            val status = invocation.arguments[0] as HttpStatus
+            HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
+        }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
+
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>,-1 ,context)
+
+        val body = ret.body.toString()
+        val result = gson.fromJson(body, ErrorMesssage::class.java)
+        assertEquals(ret.status, HttpStatus.NOT_FOUND)
     }
 }

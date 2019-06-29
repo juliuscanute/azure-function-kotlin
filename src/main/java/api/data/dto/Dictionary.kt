@@ -1,3 +1,3 @@
 package api.data.dto
 
-data class Dictionary(val start: Int, val end: Int, val currentPage: Int, val words: List<Meaning>)
+data class Dictionary(val currentPage: Int, val words: List<Meaning>)

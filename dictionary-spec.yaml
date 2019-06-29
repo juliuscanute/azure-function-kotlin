@@ -69,8 +69,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Dictionary'
               example:
-                start: 1
-                end: 3
                 currentPage: 1
                 words:
                   - id: 1
@@ -87,6 +85,15 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
               example:
                 message: 'Page not found'
+                path: '/v1/dictionary/page/4'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                message: 'An error has occurred'
                 path: '/v1/dictionary/page/4'
 
 
@@ -110,8 +117,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Dictionary'
               example:
-                start: 1
-                end: 3
                 currentPage: 1
                 words:
                   - id: 1
@@ -148,12 +153,6 @@ components:
     Dictionary:
       type: 'object'
       properties:
-        start:
-          type: 'integer'
-          description: 'Start page number'
-        end:
-          type: 'integer'
-          description: 'End page number'
         currentPage:
           type: 'integer'
           description: 'Current page number'

@@ -164,7 +164,7 @@
                     <appName>${functionAppName}</appName>
                     <region>${functionAppRegion}</region>
                     <appSettings>
-                        <!-- Run Azure DictionaryHandler from package file by default -->
+                        <!-- Run Azure DictionaryTotalPageHandler from package file by default -->
                         <property>
                             <name>WEBSITE_RUN_FROM_PACKAGE</name>
                             <value>1</value>
