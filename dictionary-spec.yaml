@@ -109,14 +109,24 @@ paths:
           schema:
             type: string
           example: happy
+        - name: pageNo
+          in: query
+          required: true
+          description: Page Number
+          schema:
+            type: integer
+          example: 1
       responses:
         '200':
           description: 'Success'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dictionary'
+                $ref: '#/components/schemas/SearchResult'
               example:
+                startPage: 1
+                endPage: 2
+                totalRecords: 100
                 currentPage: 1
                 words:
                   - id: 1
@@ -153,6 +163,27 @@ components:
     Dictionary:
       type: 'object'
       properties:
+        currentPage:
+          type: 'integer'
+          description: 'Current page number'
+        words:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/Meaning'
+
+
+    SearchResult:
+      type: 'object'
+      properties:
+        startPage:
+          type: 'integer'
+          description: 'Start page number'
+        endPage:
+          type: 'integer'
+          description: 'End page number'
+        totalRecords:
+          type: 'integer'
+          description: 'Records per page'
         currentPage:
           type: 'integer'
           description: 'Current page number'

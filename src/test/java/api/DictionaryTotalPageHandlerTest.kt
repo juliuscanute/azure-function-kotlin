@@ -3,8 +3,10 @@ package api
 import api.data.dto.Dictionary
 import api.data.dto.ErrorMesssage
 import api.data.dto.Page
+import api.data.dto.SearchResult
 import api.data.exception.PageRetrievalException
 import api.data.repository.RepositoryInterface
+import api.handler.DictionarySearchHandler
 import api.handler.DictionaryTotalPageHandler
 import api.handler.DictionaryWordsInPageHandler
 import com.google.gson.Gson
@@ -97,7 +99,7 @@ class DictionaryTotalPageHandlerTest {
             HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
         }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
 
-        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2,context)
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2, context)
 
         val body = ret.body.toString()
         val result = gson.fromJson(body, Dictionary::class.java)
@@ -116,7 +118,7 @@ class DictionaryTotalPageHandlerTest {
         })
 
         val req = mock(HttpRequestMessage::class.java)
-        doReturn(URI("v1/dictionary/page")).`when`(req).uri
+        doReturn(URI("v1/dictionary")).`when`(req).uri
 
         val context = mock(ExecutionContext::class.java)
         doReturn(Logger.getGlobal()).`when`(context).logger
@@ -125,10 +127,42 @@ class DictionaryTotalPageHandlerTest {
             HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
         }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
 
-        val ret = handler.run(req as HttpRequestMessage<Optional<String>>,-1 ,context)
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, -1, context)
 
         val body = ret.body.toString()
         val result = gson.fromJson(body, ErrorMesssage::class.java)
         assertEquals(ret.status, HttpStatus.NOT_FOUND)
+    }
+
+    @Test
+    fun testSearchInDictionary() {
+        val handler = DictionarySearchHandler()
+        val gson = Gson()
+        loadKoinModules(module(override = true) {
+            single { MockRepository() as RepositoryInterface }
+        })
+
+        val req = mock(HttpRequestMessage::class.java)
+
+        val queryParams = HashMap<String, String>()
+        queryParams["word"] = "test"
+        queryParams["pageNo"] = "1"
+        doReturn(queryParams).`when`(req as HttpRequestMessage<Optional<String>>).queryParameters
+
+        val context = mock(ExecutionContext::class.java)
+        doReturn(Logger.getGlobal()).`when`(context).logger
+        doAnswer { invocation ->
+            val status = invocation.arguments[0] as HttpStatus
+            HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
+        }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
+
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2, context)
+
+        val body = ret.body.toString()
+        val result = gson.fromJson(body, SearchResult::class.java)
+        assertEquals(1, result.currentPage)
+        assertEquals("A", result.words.first().word)
+        assertEquals("A", result.words.first().meaning)
+        assertEquals(ret.status, HttpStatus.OK)
     }
 }
