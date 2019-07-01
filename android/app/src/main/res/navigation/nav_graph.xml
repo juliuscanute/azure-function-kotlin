@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
+            app:startDestination="@id/wordListFragment">
+
+    <fragment android:id="@+id/wordListFragment" android:name="com.map.dictionary.controller.WordListFragment"
+              android:label="fragment_meaning_list" tools:layout="@layout/fragment_meaning_list">
+        <action app:destination="@id/descriptionFragment" android:id="@+id/wordToMeaningAction">
+            <argument
+                    android:name="word"
+                    app:argType="string"
+                    android:defaultValue="word"/>
+            <argument
+                    android:name="meaning"
+                    app:argType="string"
+                    android:defaultValue="meaning"/>
+        </action>
+    </fragment>
+
+    <fragment android:id="@+id/descriptionFragment" android:name="com.map.dictionary.controller.DescriptionFragment"
+              android:label="fragment_description" tools:layout="@layout/fragment_description"/>
+</navigation>

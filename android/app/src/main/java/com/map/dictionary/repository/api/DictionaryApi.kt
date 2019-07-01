@@ -16,5 +16,5 @@ interface DictionaryApi {
     fun getWordsInDictionaryPage(@Path("pageNo") pageNo: Int): Call<Dictionary>
 
     @GET("/v1/dictionary")
-    fun searchForWordsInDictionary(@Query("word") word: String, @Query("pageNo") pageNo: Int): Call<SearchResult>
+    fun searchForWordsInDictionary(@Query("pageNo") pageNo: Int, @Query("word") word: String): Call<SearchResult>
 }
