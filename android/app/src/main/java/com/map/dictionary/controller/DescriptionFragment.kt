@@ -8,20 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.map.dictionary.R
+import kotlinx.android.synthetic.main.fragment_description.*
 
 
 private const val WORD = "word"
 private const val MEANING = "meaning"
 
 class DescriptionFragment : Fragment() {
-    private var word: String? = null
-    private var meaning: String? = null
+    private var dictionaryWord: String? = null
+    private var dictionaryMeaning: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            word = it.getString(WORD)
-            meaning = it.getString(MEANING)
+            dictionaryWord = it.getString(WORD)
+            dictionaryMeaning = it.getString(MEANING)
         }
     }
 
@@ -30,6 +31,12 @@ class DescriptionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_description, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        word.text = dictionaryWord
+        meaning.text = dictionaryMeaning
     }
 
     companion object {

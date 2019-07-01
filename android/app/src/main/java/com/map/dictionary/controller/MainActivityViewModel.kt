@@ -1,33 +1,22 @@
 package com.map.dictionary.controller
 
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.map.dictionary.repository.Repository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.map.dictionary.repository.DictionaryAllWordsDataSourceFactory
+import com.map.dictionary.repository.dto.Meaning
 
-class MainActivityViewModel(repository: Repository) : ViewModel() {
-    companion object {
-        private const val VISIBLE_THRESHOLD = 5
-    }
-
-
-    private val viewModelJob = SupervisorJob()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-
-    fun listScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
-        if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-        }
-    }
-
-    private suspend fun getData(tramStop: String) = withContext(Dispatchers.Default) {
-
-    }
+class MainActivityViewModel(
+    config: PagedList.Config,
+    private val dataSourceFactory: DictionaryAllWordsDataSourceFactory
+) :
+    ViewModel() {
+    val words: LiveData<PagedList<Meaning>> = LivePagedListBuilder(dataSourceFactory, config).build()
 
     override fun onCleared() {
         super.onCleared()
-        viewModelJob.cancel()
+        dataSourceFactory.releaseResouces()
     }
 }

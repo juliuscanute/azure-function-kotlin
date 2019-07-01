@@ -9,12 +9,12 @@ import retrofit2.http.Query
 import retrofit2.Call
 
 interface DictionaryApi {
-    @GET("/v1/dictionary/pages")
+    @GET("/api/v1/dictionary/pages")
     fun getNumberOfPagesInDictionary(): Call<Page>
 
-    @GET("/v1/dictionary/page/{pageNo}")
+    @GET("/api/v1/dictionary/page/{pageNo}")
     fun getWordsInDictionaryPage(@Path("pageNo") pageNo: Int): Call<Dictionary>
 
-    @GET("/v1/dictionary")
+    @GET("/api/v1/dictionary")
     fun searchForWordsInDictionary(@Query("pageNo") pageNo: Int, @Query("word") word: String): Call<SearchResult>
 }
