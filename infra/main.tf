@@ -31,7 +31,7 @@ module "cosmos" {
 }
 
 module "function_app" {
-  source = "git@github.com:juliuscanute/azure-terraform-modules.git//serverless-functions?ref=0.0.22"
+  source = "git@github.com:juliuscanute/azure-terraform-modules.git//serverless-functions?ref=0.0.23"
   resource_group_name = "${data.terraform_remote_state.init.resource_group_name}"
   resouce_group_location = "${data.terraform_remote_state.init.resource_group_location}"
   function_app_name = "dictionary-20190626184020334"
