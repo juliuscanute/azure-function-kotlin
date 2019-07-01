@@ -156,7 +156,7 @@ class DictionaryTotalPageHandlerTest {
             HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
         }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
 
-        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2, context)
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, context)
 
         val body = ret.body.toString()
         val result = gson.fromJson(body, SearchResult::class.java)
@@ -189,7 +189,7 @@ class DictionaryTotalPageHandlerTest {
             HttpResponseMessageMock.HttpResponseMessageBuilderMock().status(status)
         }.`when`(req).createResponseBuilder(any(HttpStatus::class.java))
 
-        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, 2, context)
+        val ret = handler.run(req as HttpRequestMessage<Optional<String>>, context)
 
         val body = ret.body.toString()
         val result = gson.fromJson(body, SearchResult::class.java)

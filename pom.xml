@@ -17,9 +17,9 @@
         <azure.functions.maven.plugin.version>1.3.2</azure.functions.maven.plugin.version>
         <azure.functions.java.library.version>1.3.0</azure.functions.java.library.version>
         <functionAppName>dictionary-20190626184020334</functionAppName>
-        <functionAppRegion>westus</functionAppRegion>
+        <functionAppRegion>australiasoutheast</functionAppRegion>
         <stagingDirectory>${project.build.directory}/azure-functions/${functionAppName}</stagingDirectory>
-        <functionResourceGroup>java-functions-group</functionResourceGroup>
+        <functionResourceGroup>uat</functionResourceGroup>
         <kotlin.version>1.3.40</kotlin.version>
     </properties>
 

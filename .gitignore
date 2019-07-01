@@ -33,3 +33,14 @@ hs_err_pid*
 local.settings.json
 bin/
 obj/
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tvars files
+*.tvars
+*.cfg

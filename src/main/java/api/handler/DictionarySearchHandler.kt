@@ -17,8 +17,9 @@ class DictionarySearchHandler {
 
     @FunctionName("searchForWordsInDictionary")
     fun run(
-            @HttpTrigger(name = "req", methods = [HttpMethod.GET], route = "v1/dictionary", authLevel = AuthorizationLevel.ANONYMOUS) request: HttpRequestMessage<Optional<String>>,
-            @BindingName("pageNo") pageNo: Int, context: ExecutionContext): HttpResponseMessage {
+            @HttpTrigger(name = "req", methods = [HttpMethod.GET],
+                    route = "v1/dictionary", authLevel = AuthorizationLevel.ANONYMOUS)
+            request: HttpRequestMessage<Optional<String>>, context: ExecutionContext): HttpResponseMessage {
         context.logger.info("Processing get words in a dictionary page")
         val query = request.queryParameters
         val word = query["word"] ?: ""
