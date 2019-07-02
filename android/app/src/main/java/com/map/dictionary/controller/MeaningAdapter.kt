@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.navigation.findNavController
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.map.dictionary.R
 import com.map.dictionary.repository.dto.Meaning
 import kotlinx.android.synthetic.main.fragment_meaning.view.*
 
-class MeaningAdapter : ListAdapter<Meaning, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
+class MeaningAdapter : PagedListAdapter<Meaning, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
     private val mOnClickListener: View.OnClickListener
 
     init {

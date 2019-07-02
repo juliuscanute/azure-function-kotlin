@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Dictionary</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_status">Application status</string>
+    <string name="load_start">Loading…please wait.</string>
+    <string name="load_complete_success">Fetched %d entries.</string>
+    <string name="load_complete_error">Network fetch failed.</string>
 </resources>

@@ -1,11 +1,14 @@
 package com.map.dictionary.di
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.map.dictionary.controller.MainActivityViewModel
 import com.map.dictionary.repository.DictionaryAllWordsDataSourceFactory
 import com.map.dictionary.repository.DictionaryRepository
+import com.map.dictionary.repository.Event
 import com.map.dictionary.repository.Repository
 import com.map.dictionary.repository.api.DictionaryApi
+import com.map.dictionary.repository.dto.NetworkState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,8 +25,9 @@ val dictionaryModule = module {
     single { DictionaryRepository(get()) as Repository }
     single { PagedList.Config.Builder().setPageSize(PAGE_SIZE).setEnablePlaceholders(true).build() }
     factory { CoroutineScope(Dispatchers.Main + SupervisorJob()) }
-    factory { DictionaryAllWordsDataSourceFactory(get(),get()) }
-    viewModel { MainActivityViewModel(get(), get()) }
+    single { MutableLiveData<Event<NetworkState>>() }
+    factory { DictionaryAllWordsDataSourceFactory(get(), get(), get()) }
+    viewModel { MainActivityViewModel(get(), get(), get()) }
 }
 
 
