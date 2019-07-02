@@ -3,11 +3,12 @@ package com.map.dictionary.di
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.map.dictionary.controller.MainActivityViewModel
-import com.map.dictionary.repository.DictionaryAllWordsDataSourceFactory
+import com.map.dictionary.repository.datasource.DictionaryAllWordsDataSourceFactory
 import com.map.dictionary.repository.DictionaryRepository
 import com.map.dictionary.repository.Event
 import com.map.dictionary.repository.Repository
 import com.map.dictionary.repository.api.DictionaryApi
+import com.map.dictionary.repository.datasource.DictionarySearchWordsDataSourceFactory
 import com.map.dictionary.repository.dto.NetworkState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +24,12 @@ const val PAGE_SIZE = 20
 val dictionaryModule = module {
     single { createApiClient() }
     single { DictionaryRepository(get()) as Repository }
-    single { PagedList.Config.Builder().setPageSize(PAGE_SIZE).setEnablePlaceholders(true).build() }
+    single { PagedList.Config.Builder().setPageSize(PAGE_SIZE).setEnablePlaceholders(false).build() }
     factory { CoroutineScope(Dispatchers.Main + SupervisorJob()) }
     single { MutableLiveData<Event<NetworkState>>() }
     factory { DictionaryAllWordsDataSourceFactory(get(), get(), get()) }
-    viewModel { MainActivityViewModel(get(), get(), get()) }
+    factory { DictionarySearchWordsDataSourceFactory(get(), get(), get()) }
+    viewModel { MainActivityViewModel(get(), get(), get(), get()) }
 }
 
 

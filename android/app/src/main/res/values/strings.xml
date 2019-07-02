@@ -4,4 +4,6 @@
     <string name="load_start">Loading…please wait.</string>
     <string name="load_complete_success">Fetched %d entries.</string>
     <string name="load_complete_error">Network fetch failed.</string>
+    <string name="no_data_found">No data found.</string>
+    <string name="search_word">Search in Dictionary…</string>
 </resources>
