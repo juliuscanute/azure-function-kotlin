@@ -10,7 +10,6 @@ import com.map.dictionary.repository.Repository
 import com.map.dictionary.repository.dto.*
 import com.map.dictionary.repository.exception.FetchException
 import com.map.dictionary.repository.exception.NoDataException
-import kotlin.math.ceil
 import kotlin.math.min
 
 class DictionaryAllWordsDataSource(

@@ -1,14 +1,12 @@
 package com.map.dictionary.controller
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.map.dictionary.R
 import com.map.dictionary.repository.dto.NetworkMessage
 import com.map.dictionary.repository.dto.NetworkState
