@@ -10,28 +10,27 @@ import com.map.dictionary.repository.Repository
 import com.map.dictionary.repository.dto.*
 import com.map.dictionary.repository.exception.FetchException
 import com.map.dictionary.repository.exception.NoDataException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlin.math.ceil
 import kotlin.math.min
 
 class DictionaryAllWordsDataSource(
     private val repository: Repository,
-    private val uiScope: CoroutineScope,
     private val networkState: MutableLiveData<Event<NetworkMessage>>
 ) :
     PositionalDataSource<Meaning>() {
 
+    private var totalPages = 0
+
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Meaning>) {
         Log.d("DataSource", "loadSize: ${params.loadSize},startPosition: ${params.startPosition}")
-//        uiScope.launch {
         try {
-            val startPage = params.startPosition / PAGE_SIZE
-            val endPage = (startPage + params.loadSize / PAGE_SIZE) - 1
-            val words = getWordsFromPage(startPage, endPage)
-            if (words.isEmpty()) throw NoDataException()
-            callback.onResult(words)
+            val startPage = (params.startPosition / PAGE_SIZE) + 1
+            if (totalPages >= startPage) {
+                val words = getWordsFromPage(startPage, startPage)
+                if (words.isEmpty()) throw NoDataException()
+                callback.onResult(words)
+            }
+
         } catch (e: FetchException) {
             networkState.postValue(
                 Event(
@@ -51,7 +50,6 @@ class DictionaryAllWordsDataSource(
                 )
             )
         }
-//        }
     }
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Meaning>) {
@@ -59,14 +57,14 @@ class DictionaryAllWordsDataSource(
             "DataSource",
             "requestedStartPosition: ${params.requestedStartPosition},requestedLoadSize: ${params.requestedLoadSize}"
         )
-//        uiScope.launch {
         try {
             val total = getTotalPages()
             val endPage = min((params.requestedLoadSize / PAGE_SIZE), 3)
             val startPage = 1
             val words = getWordsFromPage(startPage, endPage)
             if (words.isEmpty()) throw NoDataException()
-            callback.onResult(words, params.requestedStartPosition, (total.end * PAGE_SIZE))
+            callback.onResult(words, 0, (total.end * PAGE_SIZE))
+            totalPages = total.end
         } catch (e: FetchException) {
             networkState.postValue(
                 Event(
@@ -86,7 +84,6 @@ class DictionaryAllWordsDataSource(
                 )
             )
         }
-//        }
     }
 
     fun getWordsFromPage(startPage: Int, endPage: Int): MutableList<Meaning> {

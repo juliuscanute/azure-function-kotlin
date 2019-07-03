@@ -35,7 +35,7 @@ class MeaningAdapter : PagedListAdapter<Meaning, RecyclerView.ViewHolder>(REPO_C
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val dictionaryItem = getItem(position)
         if (dictionaryItem != null) {
-            (holder as DictionaryViewHolder).mContentView.text = dictionaryItem.word
+            (holder as DictionaryViewHolder).mContentView.text = "${dictionaryItem.id} ${dictionaryItem.word}"
             with(holder.view) {
                 tag = dictionaryItem
                 setOnClickListener(mOnClickListener)

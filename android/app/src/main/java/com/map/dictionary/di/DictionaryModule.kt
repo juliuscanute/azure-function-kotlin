@@ -10,9 +10,6 @@ import com.map.dictionary.repository.Repository
 import com.map.dictionary.repository.api.DictionaryApi
 import com.map.dictionary.repository.datasource.DictionarySearchWordsDataSourceFactory
 import com.map.dictionary.repository.dto.NetworkState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -25,10 +22,9 @@ val dictionaryModule = module {
     single { createApiClient() }
     single { DictionaryRepository(get()) as Repository }
     single { PagedList.Config.Builder().setPageSize(PAGE_SIZE).setEnablePlaceholders(false).build() }
-    factory { CoroutineScope(Dispatchers.Main + SupervisorJob()) }
     single { MutableLiveData<Event<NetworkState>>() }
-    factory { DictionaryAllWordsDataSourceFactory(get(), get(), get()) }
-    factory { DictionarySearchWordsDataSourceFactory(get(), get(), get()) }
+    factory { DictionaryAllWordsDataSourceFactory(get(), get()) }
+    factory { DictionarySearchWordsDataSourceFactory(get(), get()) }
     viewModel { MainActivityViewModel(get(), get(), get(), get()) }
 }
 

@@ -13,49 +13,46 @@ import com.map.dictionary.repository.dto.NetworkState
 import com.map.dictionary.repository.dto.SearchResult
 import com.map.dictionary.repository.exception.FetchException
 import com.map.dictionary.repository.exception.NoDataException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.math.min
+import kotlin.math.ceil
+
 
 class DictionarySearchWordsDataSource(
     private val repository: Repository,
-    private val uiScope: CoroutineScope,
     private val networkState: MutableLiveData<Event<NetworkMessage>>,
     private val query: String
 ) :
     PositionalDataSource<Meaning>() {
 
+    private var totalPages = 0
+
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Meaning>) {
         Log.d("DataSource", "loadSize: ${params.loadSize},startPosition: ${params.startPosition}")
-//        uiScope.launch {
-            try {
-                val startPage = params.startPosition / PAGE_SIZE
-                val endPage = (startPage + params.loadSize / PAGE_SIZE) - 1
-                val words = getWordsFromPage(startPage, endPage, query)
+        try {
+            val startPage = ceil(params.startPosition.toFloat() / PAGE_SIZE.toFloat()).toInt() + 1
+            if (totalPages >= startPage) {
+                val words = getWordsFromPage(startPage, startPage, query)
                 if (words.first.isEmpty()) throw NoDataException()
                 callback.onResult(words.first)
-            } catch (e: FetchException) {
-                networkState.postValue(
-                    Event(
-                        NetworkMessage(
-                            networkState = NetworkState.NETWORK_FETCH_ERROR,
-                            message = R.string.load_complete_error
-                        )
-                    )
-                )
-            } catch (e: NoDataException) {
-                networkState.postValue(
-                    Event(
-                        NetworkMessage(
-                            networkState = NetworkState.NETWORK_NO_DATA,
-                            message = R.string.no_data_found
-                        )
-                    )
-                )
             }
-//        }
+        } catch (e: FetchException) {
+            networkState.postValue(
+                Event(
+                    NetworkMessage(
+                        networkState = NetworkState.NETWORK_FETCH_ERROR,
+                        message = R.string.load_complete_error
+                    )
+                )
+            )
+        } catch (e: NoDataException) {
+            networkState.postValue(
+                Event(
+                    NetworkMessage(
+                        networkState = NetworkState.NETWORK_NO_DATA,
+                        message = R.string.no_data_found
+                    )
+                )
+            )
+        }
     }
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Meaning>) {
@@ -63,37 +60,34 @@ class DictionarySearchWordsDataSource(
             "DataSource",
             "requestedStartPosition: ${params.requestedStartPosition},requestedLoadSize: ${params.requestedLoadSize}"
         )
-//        uiScope.launch {
-            try {
-                val pair = getWordsFromPage(1, 1, query)
-                val adjustSize = min(params.requestedLoadSize, pair.first.size)
-                val subList = pair.first.subList(0, adjustSize)
-                if (subList.isEmpty()) throw NoDataException()
-                callback.onResult(
-                    subList,
-                    params.requestedStartPosition,
-                    pair.second
-                )
-            } catch (e: FetchException) {
-                networkState.postValue(
-                    Event(
-                        NetworkMessage(
-                            networkState = NetworkState.NETWORK_FETCH_ERROR,
-                            message = R.string.load_complete_error
-                        )
+        try {
+            val pair = getWordsFromPage(1, 1, query)
+            if (pair.first.isEmpty()) throw NoDataException()
+            totalPages = ceil((pair.second).toFloat() / PAGE_SIZE.toFloat()).toInt()
+            callback.onResult(
+                pair.first,
+                0,
+                pair.second
+            )
+        } catch (e: FetchException) {
+            networkState.postValue(
+                Event(
+                    NetworkMessage(
+                        networkState = NetworkState.NETWORK_FETCH_ERROR,
+                        message = R.string.load_complete_error
                     )
                 )
-            } catch (e: NoDataException) {
-                networkState.postValue(
-                    Event(
-                        NetworkMessage(
-                            networkState = NetworkState.NETWORK_NO_DATA,
-                            message = R.string.no_data_found
-                        )
+            )
+        } catch (e: NoDataException) {
+            networkState.postValue(
+                Event(
+                    NetworkMessage(
+                        networkState = NetworkState.NETWORK_NO_DATA,
+                        message = R.string.no_data_found
                     )
                 )
-            }
-//        }
+            )
+        }
     }
 
     fun getWordsFromPage(startPage: Int, endPage: Int, query: String): Pair<MutableList<Meaning>, Int> {
@@ -109,7 +103,7 @@ class DictionarySearchWordsDataSource(
                 NetworkMessage(
                     networkState = NetworkState.NETWORK_FETCH_SUCCESS,
                     message = R.string.load_complete_success,
-                    loaded = words.size
+                    loaded = totalRecords
                 )
             )
         )

@@ -12,8 +12,6 @@ import com.map.dictionary.repository.Event
 import com.map.dictionary.repository.datasource.DictionarySearchWordsDataSourceFactory
 import com.map.dictionary.repository.dto.Meaning
 import com.map.dictionary.repository.dto.NetworkMessage
-import kotlinx.coroutines.SupervisorJob
-import java.util.concurrent.Executors
 
 private const val ALL = "all"
 private const val SEARCH = "search"
@@ -27,8 +25,6 @@ class MainActivityViewModel(
     ViewModel() {
 
     private val mapOfLiveData: HashMap<String, LiveData<PagedList<Meaning>>> = HashMap()
-    private val allWords = LivePagedListBuilder(dataSourceFactory, config).build()
-    private val searchWords = LivePagedListBuilder(searchDataSourceFactory, config).build()
     val words: MediatorLiveData<PagedList<Meaning>> = MediatorLiveData()
     var searchShown: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
     var searchQuery: MutableLiveData<String> = MutableLiveData()
@@ -36,6 +32,8 @@ class MainActivityViewModel(
     init {
         addAllWordsAndRemoveSearch()
     }
+
+    fun getSearchState() = searchShown.value ?: false
 
     fun searchStart() {
         searchShown.postValue(true)
@@ -53,10 +51,14 @@ class MainActivityViewModel(
         addSearchAndRemoveAllWords()
     }
 
+    fun invalidateDataSource() {
+        words.value?.dataSource?.invalidate()
+    }
+
     private fun addAllWordsAndRemoveSearch() {
         removeSearchObserver()
         if (!mapOfLiveData.containsKey(ALL)) {
-            mapOfLiveData[ALL] = allWords
+            mapOfLiveData[ALL] = LivePagedListBuilder(dataSourceFactory, config).build()
             words.addSource(mapOfLiveData[ALL]!!) {
                 words.value = it
             }
@@ -67,7 +69,7 @@ class MainActivityViewModel(
     private fun addSearchAndRemoveAllWords() {
         removeAllWordsObserver()
         if (!mapOfLiveData.containsKey(SEARCH)) {
-            mapOfLiveData[SEARCH] = searchWords
+            mapOfLiveData[SEARCH] = LivePagedListBuilder(searchDataSourceFactory, config).build()
             words.addSource(mapOfLiveData[SEARCH]!!) {
                 words.value = it
             }
@@ -78,7 +80,6 @@ class MainActivityViewModel(
         if (mapOfLiveData.containsKey(SEARCH)) {
             words.removeSource(mapOfLiveData[SEARCH]!!)
             mapOfLiveData.remove(SEARCH)
-            searchWords.value?.dataSource?.invalidate()
         }
     }
 
@@ -86,14 +87,7 @@ class MainActivityViewModel(
         if (mapOfLiveData.containsKey(ALL)) {
             words.removeSource(mapOfLiveData[ALL]!!)
             mapOfLiveData.remove(ALL)
-            allWords.value?.dataSource?.invalidate()
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        dataSourceFactory.releaseResouces()
-        searchDataSourceFactory.releaseResouces()
     }
 
 }
