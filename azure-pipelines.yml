@@ -21,8 +21,7 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-steps:
-  - task: PublishPipelineArtifact@1
-    inputs:
-      path: $(System.DefaultWorkingDirectory)/target/$(artifactId)-$(artifactVersion).jar
-      artifact: Dictionary
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: $(System.DefaultWorkingDirectory)/target/$(artifactId)-$(artifactVersion).jar
+    artifact: Dictionary
