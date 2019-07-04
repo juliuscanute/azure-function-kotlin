@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>api</groupId>
-    <artifactId>${env.ARTIFACT_ID}</artifactId>
-    <version>${env.ARTIFACT_VERSION}</version>
+    <artifactId>$(artifactName)</artifactId>
+    <version>$(artifactVersion)</version>
     <packaging>jar</packaging>
 
     <name>Azure Java Functions</name>
@@ -21,6 +21,8 @@
         <stagingDirectory>${project.build.directory}/azure-functions/${functionAppName}</stagingDirectory>
         <functionResourceGroup>uat</functionResourceGroup>
         <kotlin.version>1.3.40</kotlin.version>
+        <artifactName>dictionary</artifactName>
+        <artifactVersion>1.0</artifactVersion>
     </properties>
 
     <repositories>
