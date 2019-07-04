@@ -13,6 +13,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
+    options: '-DARTIFACT_ID=$(artifactId) -DARTIFACT_VERSION=$(artifactVersion)'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
@@ -20,3 +21,8 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+steps:
+  - task: PublishPipelineArtifact@1
+    inputs:
+      path: $(System.DefaultWorkingDirectory)/target/$(artifactId)-$(artifactVersion).jar
+      artifact: Dictionary

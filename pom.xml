@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>api</groupId>
-    <artifactId>dictionary</artifactId>
-    <version>1.0</version>
+    <artifactId>${env.ARTIFACT_ID}</artifactId>
+    <version>${env.ARTIFACT_VERSION}</version>
     <packaging>jar</packaging>
 
     <name>Azure Java Functions</name>
