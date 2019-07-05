@@ -29,3 +29,7 @@ variable "database_uri" {
 variable "collection_uri" {
   type = "string"
 }
+
+variable "function_app_name" {
+  type = "string"
+}

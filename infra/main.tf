@@ -34,7 +34,7 @@ module "function_app" {
   source = "git@github.com:juliuscanute/azure-terraform-modules.git//serverless-functions?ref=0.0.23"
   resource_group_name = "${data.terraform_remote_state.init.resource_group_name}"
   resouce_group_location = "${data.terraform_remote_state.init.resource_group_location}"
-  function_app_name = "dictionary-20190626184020334"
+  function_app_name = "${var.function_app_name}"
   storage_connection_string = "${data.azurerm_storage_account.storage_account.primary_connection_string}"
   host_name ="${element(module.cosmos.read_endpoints,0)}"
   master_key = "${module.cosmos.primary_readonly_master_key}"

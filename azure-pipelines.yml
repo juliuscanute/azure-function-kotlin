@@ -13,7 +13,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    options: '-Dbuild.artifactId=$(artifactId) -Dbuild.artifactVersion=$(artifactVersion)'
+    options: '-Dbuild.artifactId=$(artifactId) -Dbuild.artifactVersion=$(artifactVersion) -DfunctionAppName=$(functionAppName)'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
@@ -21,7 +21,13 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-- task: PublishPipelineArtifact@1
+- task: CopyFiles@2
   inputs:
-    path: $(System.DefaultWorkingDirectory)/target/$(artifactId)-$(artifactVersion).jar
-    artifact: Dictionary
+    contents: |
+    $(System.DefaultWorkingDirectory)/target/**
+    $(System.DefaultWorkingDirectory)/pom.xml
+    targetFolder: $(Build.ArtifactStagingDirectory)
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: dictionary
