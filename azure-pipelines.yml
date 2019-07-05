@@ -24,8 +24,8 @@ steps:
 - task: CopyFiles@2
   inputs:
     contents: |
-    $(System.DefaultWorkingDirectory)/target/**
-    $(System.DefaultWorkingDirectory)/pom.xml
+    '$(System.DefaultWorkingDirectory)/target/**'
+    '$(System.DefaultWorkingDirectory)/pom.xml'
     targetFolder: $(Build.ArtifactStagingDirectory)
 - task: PublishBuildArtifacts@1
   inputs:
