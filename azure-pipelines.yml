@@ -27,8 +27,6 @@ steps:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
       target/**
-      pom.xml
-      settings.xml
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
