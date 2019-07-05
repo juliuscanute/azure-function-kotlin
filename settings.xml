@@ -1,0 +1,9 @@
+<server>
+    <id>azure-auth</id>
+    <configuration>
+        <client>${env.ARM_CLIENT_ID}</client>
+        <tenant>${env.ARM_TENANT_ID}</tenant>
+        <key>${env.ARM_CLIENT_PASSWORD}</key>
+        <environment>AZURE</environment>
+    </configuration>
+</server>
