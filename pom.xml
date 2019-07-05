@@ -293,15 +293,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.microsoft.azure</groupId>
-                <artifactId>azure-webapp-maven-plugin</artifactId>
-                <configuration>
-                    <authentication>
-                        <serverId>azure-auth</serverId>
-                    </authentication>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
