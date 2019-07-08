@@ -13,7 +13,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    options: '-Dbuild.artifactId=$(artifactId) -Dbuild.artifactVersion=$(artifactVersion) -DfunctionAppName=$(functionAppName)'
+    options: '-Dbuild.artifactId=$(artifactId) -Dbuild.artifactVersion=$(Build.BuildId) -DfunctionAppName=$(functionAppName)'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
