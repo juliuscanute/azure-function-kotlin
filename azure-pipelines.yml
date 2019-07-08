@@ -13,7 +13,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    options: '-Dbuild.artifactId=$(artifactId) -Dbuild.artifactVersion=$(Build.BuildId) -DfunctionAppName=$(functionAppName)'
+    options: '-Dbuild.artifactId=$(artifactId) -Dbuild.artifactVersion=$(Build.BuildNumber) -DfunctionAppName=$(functionAppName)'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
@@ -26,7 +26,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
-      target/$(artifactId)-$(artifactVersion).jar
+      target/$(artifactId)-$(Build.BuildNumber).jar
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
